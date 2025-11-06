@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SergeevPasha\Pecom\DTO;
 
-use SergeevPasha\Pecom\DTO\Service;
 use Spatie\DataTransferObject\DataTransferObject;
 use SergeevPasha\Pecom\DTO\Collection\CargoCollection;
 

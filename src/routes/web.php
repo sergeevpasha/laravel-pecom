@@ -9,3 +9,5 @@ Route::get('/cities/{city}/terminals', [PecomController::class, 'getCityTerminal
     ->name('pecom.cities.terminals');
 Route::post('/calculate', [PecomController::class, 'calculateDeliveryPrice'])
     ->name('pecom.calculate');
+Route::get('/history', [PecomController::class, 'getCargoStatus'])
+    ->name('pecom.history');

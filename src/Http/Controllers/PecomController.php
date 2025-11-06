@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace SergeevPasha\Pecom\Http\Controllers;
 
 use Exception;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
 use SergeevPasha\Pecom\DTO\Delivery;
 use Illuminate\Support\Facades\Validator;
+use SergeevPasha\Pecom\Http\Requests\PecomDeliveryStatusRequest;
 use SergeevPasha\Pecom\Libraries\PecomClient;
 use Illuminate\Validation\ValidationException;
 use SergeevPasha\Pecom\Http\Requests\PecomQueryCityRequest;
@@ -98,5 +100,23 @@ class PecomController
         $data = $this->client->getPrice(Delivery::fromArray($request->all()));
         $this->validateResponse($data);
         return response()->json($data);
+    }
+
+    /**
+     * Get cargo status by cargo codes.
+     *
+     * @param PecomDeliveryStatusRequest $request
+     *
+     * @return JsonResponse
+     * @throws GuzzleException
+     * @throws Exception
+     * @api
+     *
+     */
+    public function getCargoStatus(PecomDeliveryStatusRequest $request): JsonResponse
+    {
+        $data = $request->validated();
+        $result = $this->client->getOrderHistory($data['cargo_code']);
+        return response()->json($result[0]['statuses']);
     }
 }

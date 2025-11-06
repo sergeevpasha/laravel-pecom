@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace SergeevPasha\Pecom\Libraries;
 
 use Exception;
+use GuzzleHttp\Exception\GuzzleException;
 use SergeevPasha\Pecom\DTO\Delivery;
 use SergeevPasha\Pecom\DTO\Collection\CargoCollection;
+use SergeevPasha\Pecom\DTO\PecomTrack;
+use Spatie\DataTransferObject\Exceptions\UnknownProperties;
 
 class PecomClient
 {
@@ -123,6 +126,50 @@ class PecomClient
         }
     }
 
+    /**
+     * Get basic cargo status information by cargo codes.
+     *
+     * @param string $cargoCode
+     * @return PecomTrack
+     * @throws GuzzleException
+     * @throws UnknownProperties
+     */
+    public function findByTrackNumber(string $cargoCode): PecomTrack
+    {
+        $data = $this->request(
+            'https://kabinet.pecom.ru/api/v1/cargos/basicstatus',
+            [
+                'cargoCodes' => [$cargoCode],
+            ]
+        );
+        return PecomTrack::fromArray($data);
+    }
+
+    /**
+     * Get Orders History.
+     *
+     * @param array $cargoCodes
+     * @return array
+     * @throws GuzzleException
+     */
+    public function getOrdersHistory(array $cargoCodes): array
+    {
+        return $this->request('https://kabinet.pecom.ru/api/v1/cargos/statusfullhistory', [
+            'cargoCodes' => $cargoCodes
+        ]);
+    }
+
+    /**
+     * Get Order History.
+     *
+     * @param string $cargoCode
+     * @return array
+     * @throws GuzzleException
+     */
+    public function getOrderHistory(string $cargoCode): array
+    {
+        return $this->getOrdersHistory([$cargoCode]);
+    }
     /**
      * Find all available city terminals
      *
